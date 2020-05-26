@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-    unpin.py -- Simple 4-digit bruteforcer
+    unpin.py -- Simple 4-digit passwordlist generator
 
     Note:
         Modify the script for bruteforcing can be used as password list for 4-digit pins
