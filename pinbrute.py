@@ -36,6 +36,10 @@ def generate_pin():
 
 def send_data(host, port, passwd):
 
+    # Number of tries to be sent to stdout
+
+    tries = 0
+
     # Send pieces of data to server
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,14 +48,27 @@ def send_data(host, port, passwd):
 
     s.connect((host, port))
 
+    # Generate item from yielded result of pin
     pins = generate_pin()
 
-    for pin in pins:
+    # Send data iterate over the yielded result
+    for index, pin in enumerate(pins):
 
         pin = str(pin)
 
         data_src = '%s %s\n' % (passwd, pin)
 
+        # Initialize messages
+        if index == tries:
+            if tries == 0:
+                print('>> Sending data to server on port %s\n' % port)
+
+        # Provide an update to user for every number of tries
+            if index == tries:
+                print('> %s data sent on port %s' % (tries, port))
+                tries += 500
+
+        # Transport data to socket
         s.sendall(data_src.encode('utf-8'))
 
         data_out = s.recv(1024)
@@ -59,7 +76,9 @@ def send_data(host, port, passwd):
         is_correct = 'Correct!'.encode('utf-8')
 
         if is_correct in data_out:
-            print(data_out.decode('utf-8'))
+
+            result = data_out.decode('utf-8')
+            print('%s \n\n+ PIN found: %s\n+ Tries: %s' (result, pin, str(index)))
             break
 
         else:
@@ -67,7 +86,5 @@ def send_data(host, port, passwd):
 
 
 if __name__ == '__main__':
-
-    pin_list = generate_pin()
 
     send_data(host, port, passwd)
